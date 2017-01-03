@@ -1718,4 +1718,5 @@ check_bash_version && {
 
 export ANDROID_BUILD_TOP=$(gettop)
 
-. $ANDROID_BUILD_TOP/vendor/cm/build/envsetup.sh
+. $ANDROID_BUILD_TOP/vendor/cm/tools/reDefined.sh &&
+. vendor/cm/build/envsetup.sh
