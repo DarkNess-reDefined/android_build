@@ -126,7 +126,9 @@ endif # CALLED_FROM_SETUP
 
 ifneq ($(PRINT_BUILD_CONFIG),)
 $(info ============================================)
+$(info   reDefined_VERSION=$(CM_VERSION))
+$(info   DEVICE=$(CM_BUILD))
 $(foreach v, $(print_build_config_vars),\
-  $(info $v=$($(v))))
+$(info $v=$($(v))))
 $(info ============================================)
 endif
