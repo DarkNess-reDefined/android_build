@@ -662,13 +662,26 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   script.Print("Target: %s" % CalculateFingerprint(
       oem_props, oem_dict, OPTIONS.info_dict))
 
+  # Dump fingerprints
+  script.Print("Target: %s" % CalculateFingerprint(
+      oem_props, oem_dict, OPTIONS.info_dict))
+
+  script.Print("                                   ")
+  script.Print(" _|_|_|     _|      _|   _|_|_|    ")
+  script.Print(" _|    _|   _|_|    _|   _|    _|  ")
+  script.Print(" _|    _|   _|  _|  _|   _|    _|  ")
+  script.Print(" _|    _|   _|    _|_|   _|    _|  ")
+  script.Print(" _|_|_|     _|      _|   _|_|_|    ")
+  script.Print("                                   ")
+  script.Print("                                   ")
+
   script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
   device_specific.FullOTA_InstallBegin()
 
   CopyInstallTools(output_zip)
   script.UnpackPackageDir("install", "/tmp/install")
-  script.SetPermissionsRecursive("/tmp/install", 0, 0, 0o755, 0o644, None, None)
-  script.SetPermissionsRecursive("/tmp/install/bin", 0, 0, 0o755, 0o755, None, None)
+  script.SetPermissionsRecursive("/tmp/install", 0, 0, 0755, 0644, None, None)
+  script.SetPermissionsRecursive("/tmp/install/bin", 0, 0, 0755, 0755, None, None)
 
   if OPTIONS.backuptool:
     script.Mount("/system")
@@ -676,60 +689,6 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     script.Unmount("/system")
 
   system_progress = 0.75
-
-
-script.Print "                                   ";
-script.Print " _|_|_|     _|      _|   _|_|_|    ";
-script.Print " _|    _|   _|_|    _|   _|    _|  ";
-script.Print " _|    _|   _|  _|  _|   _|    _|  ";
-script.Print " _|    _|   _|    _|_|   _|    _|  ";
-script.Print " _|_|_|     _|      _|   _|_|_|    ";
-script.Print "                                   ";
-script.Print "                                   ";
-
-
-  if GetBuildProp("ro.reDefined.version", OPTIONS.info_dict) is not None:
-    buildid = GetBuildProp("ro.reDefined.version", OPTIONS.info_dict)
-    buildtype = GetBuildProp("reDefined.build.type", OPTIONS.info_dict)
-    buildidn = GetBuildProp("ro.build.id", OPTIONS.info_dict)
-    buildday = GetBuildProp("ro.build.date", OPTIONS.info_dict)
-    securep = GetBuildProp("ro.build.version.security_patch", OPTIONS.info_dict)
-    buildhst = GetBuildProp("ro.build.host", OPTIONS.info_dict)
-    density = GetBuildProp("ro.sf.lcd_density", OPTIONS.info_dict)
-    device = GetBuildProp("ro.reDefined.device", OPTIONS.info_dict)
-    androidver = GetBuildProp("ro.build.version.release", OPTIONS.info_dict)
-    manufacturer = GetBuildProp("ro.product.manufacturer", OPTIONS.info_dict)
-    maintainer = GetBuildProp("ro.build.user", OPTIONS.info_dict)
-    sdkver = GetBuildProp("ro.build.version.sdk", OPTIONS.info_dict)
-
-    script.Print(" **************** Software *****************");
-    script.Print(" OS ver: %s"%(buildid));
-    script.Print("");
-    script.Print(" Android ver: %s"%(androidver));
-    script.Print("");
-    script.Print(" Security patch: %s"%(securep));
-    script.Print("");
-    script.Print(" SDK ver: %s"%(sdkver));
-    script.Print("");
-    script.Print(" Root status: Enabled");
-    script.Print("");
-    script.Print(" Build ID: %s"%(buildidn));
-    script.Print("");
-    script.Print(" Build date: %s"%(buildday));
-    script.Print("");
-    script.Print(" Build type: %s"%(buildtype));
-    script.Print("");
-    script.Print(" Build host: %s"%(buildhst));
-    script.Print("");
-    script.Print(" Maintainer: %s"%(maintainer));
-    script.Print(" **************** Hardware *****************");
-    script.Print(" Device codename: %s"%(device));
-    script.Print("");
-    script.Print(" Manufacturer: %s"%(manufacturer));
-    script.Print("");
-    script.Print(" LCD density: %s"%(density));
-    script.Print("");
-    script.Print(" *******************************************");
 
   if OPTIONS.wipe_user_data:
     system_progress -= 0.1
