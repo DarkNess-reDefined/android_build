@@ -3,7 +3,7 @@
 print_build_config_vars := \
   PLATFORM_VERSION_CODENAME \
   PLATFORM_VERSION \
-  LINEAGE_VERSION \
+  CM_VERSION \
   TARGET_PRODUCT \
   TARGET_BUILD_VARIANT \
   TARGET_BUILD_TYPE \
@@ -126,7 +126,7 @@ endif # CALLED_FROM_SETUP
 
 ifneq ($(PRINT_BUILD_CONFIG),)
 $(info ============================================)
-$(info   reDefined_VERSION=$(CM_VERSION))
+$(info   DND_VERSION=$(CM_VERSION))
 $(info   DEVICE=$(CM_BUILD))
 $(foreach v, $(print_build_config_vars),\
 $(info $v=$($(v))))
