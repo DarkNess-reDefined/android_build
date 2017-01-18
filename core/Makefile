@@ -1,5 +1,17 @@
 # Put some miscellaneous rules here
 
+ifneq ($(BUILD_WITH_COLORS),0)
+  CL_PFX="\033[33m"
+  CL_INS="\033[36m"
+  CL_RED="\033[31m"
+  CL_GRN="\033[32m"
+  CL_YLW="\033[33m"
+  CL_BLU="\033[34m"
+  CL_MAG="\033[35m"
+  CL_CYA="\033[36m"
+  CL_RST="\033[0m"
+endif
+
 # HACK: clear LOCAL_PATH from including last build target before calling
 # intermedites-dir-for
 LOCAL_PATH := $(BUILD_SYSTEM)
@@ -2235,14 +2247,14 @@ otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 bacon: otapackage
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(CM_TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(CM_TARGET_PACKAGE) > $(CM_TARGET_PACKAGE).md5sum
-	echo "                                   ";
-	echo " _|_|_|     _|      _|   _|_|_|    ";
-	echo " _|    _|   _|_|    _|   _|    _|  ";
-	echo " _|    _|   _|  _|  _|   _|    _|  ";
-	echo " _|    _|   _|    _|_|   _|    _|  ";
-	echo " _|_|_|     _|      _|   _|_|_|    ";
-	echo "                                   ";
-	echo "                                   ";
+	echo -e ${CL_CYA} "                                                                                                                         ";
+	echo -e ${CL_CYA} " ________              ______ _____   __                                  ________     ____________            _________ ";
+	echo -e ${CL_CYA} "  ___  __ \_____ __________  /____  | / /___________________   _______________  __ \_______  __/__(_)_________________  /";
+	echo -e ${CL_CYA} "  __  / / /  __  /_  ___/_  //_/_   |/ /_  _ \_  ___/_  ___/   __  ___/  _ \_  / / /  _ \_  /_ __  /__  __ \  _ \  __  / ";
+	echo -e ${CL_CYA} "  _  /_/ // /_/ /_  /   _  ,<  _  /|  / /  __/(__  )_(__  )    _  /   /  __/  /_/ //  __/  __/ _  / _  / / /  __/ /_/ /  ";
+	echo -e ${CL_CYA} "  /_____/ \__,_/ /_/    /_/|_| /_/ |_/  \___//____/ /____/     /_/    \___//_____/ \___//_/    /_/  /_/ /_/\___/\__,_/   ";
+	echo -e ${CL_CYA} "                                                                                                                         ";
+	echo -e ${CL_CYA} "                                                                                                                         ";
 	echo "Package Complete: $(CM_TARGET_PACKAGE)"
 endif    # build_ota_package
 # -----------------------------------------------------------------
