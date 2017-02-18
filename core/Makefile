@@ -232,7 +232,7 @@ endif
 	$(hide) TARGET_BUILD_TYPE="$(TARGET_BUILD_VARIANT)" \
 			TARGET_BUILD_FLAVOR="$(TARGET_BUILD_FLAVOR)" \
 			TARGET_DEVICE="$(TARGET_VENDOR_DEVICE_NAME)" \
-			CM_DEVICE="$(TARGET_DEVICE)" \
+			DND_DEVICE="$(TARGET_DEVICE)" \
 			PRODUCT_NAME="$(TARGET_VENDOR_PRODUCT_NAME)" \
 			PRODUCT_BRAND="$(PRODUCT_BRAND)" \
 			PRODUCT_DEFAULT_LOCALE="$(call get-default-product-locale,$(PRODUCT_LOCALES))" \
@@ -1796,13 +1796,13 @@ $(BUILT_OTATOOLS_PACKAGE): zip_root := $(call intermediates-dir-for,PACKAGING,ot
 $(BUILT_OTATOOLS_PACKAGE): $(OTATOOLS) | $(ACP)
 	@echo "Package OTA tools: $@"
 	$(hide) rm -rf $@ $(zip_root)
-	$(hide) mkdir -p $(dir $@) $(zip_root)/bin $(zip_root)/framework $(zip_root)/releasetools $(zip_root)/system/extras/verity $(zip_root)/external/vboot_reference/tests/devkeys $(zip_root)/vendor/cm/build/tools
+	$(hide) mkdir -p $(dir $@) $(zip_root)/bin $(zip_root)/framework $(zip_root)/releasetools $(zip_root)/system/extras/verity $(zip_root)/external/vboot_reference/tests/devkeys $(zip_root)/vendor/dnd/build/tools
 	$(call copy-files-with-structure,$(OTATOOLS),$(HOST_OUT)/,$(zip_root))
 	$(hide) $(ACP) $(HOST_OUT_JAVA_LIBRARIES)/VeritySigner.jar $(zip_root)/framework/
 	$(hide) $(ACP) -p system/extras/verity/build_verity_metadata.py $(zip_root)/system/extras/verity/
 	$(hide) $(ACP) -p -r external/vboot_reference/tests/devkeys/* $(zip_root)/external/vboot_reference/tests/devkeys
 	$(hide) $(ACP) -r -d -p build/tools/releasetools/* $(zip_root)/releasetools
-	$(hide) $(ACP) -p vendor/cm/build/tools/getb64key.py $(zip_root)/vendor/cm/build/tools/
+	$(hide) $(ACP) -p vendor/dnd/build/tools/getb64key.py $(zip_root)/vendor/dnd/build/tools/
 	$(hide) rm -rf $@ $(zip_root)/releasetools/*.pyc
 	$(hide) (cd $(zip_root) && zip -qryX $(abspath $@) *)
 	$(hide) zip -qryX $(abspath $@) build/target/product/security/
@@ -2142,9 +2142,9 @@ ifdef BOARD_PREBUILT_VENDORIMAGE
 	$(hide) cp $(INSTALLED_VENDORIMAGE_TARGET) $(zip_root)/IMAGES/
 endif
 ifdef PRODUCT_DEFAULT_DEV_CERTIFICATE
-	$(hide) vendor/cm/build/tools/getb64key.py $(PRODUCT_DEFAULT_DEV_CERTIFICATE).x509.pem > $(zip_root)/META/releasekey.txt
+	$(hide) vendor/dnd/build/tools/getb64key.py $(PRODUCT_DEFAULT_DEV_CERTIFICATE).x509.pem > $(zip_root)/META/releasekey.txt
 else
-	$(hide) vendor/cm/build/tools/getb64key.py $(DEFAULT_SYSTEM_DEV_CERTIFICATE).x509.pem > $(zip_root)/META/releasekey.txt
+	$(hide) vendor/dnd/build/tools/getb64key.py $(DEFAULT_SYSTEM_DEV_CERTIFICATE).x509.pem > $(zip_root)/META/releasekey.txt
 endif
 	$(hide) echo "ota_override_device=$(OTA_SCRIPT_OVERRIDE_DEVICE)" >> $(zip_root)/META/misc_info.txt
 	$(hide) echo "ota_override_prop=$(OTA_SCRIPT_OVERRIDE_PROP)" >> $(zip_root)/META/misc_info.txt
@@ -2201,7 +2201,7 @@ endif
 ifeq ($(WITH_GMS),true)
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
 else
-ifneq ($(CM_BUILD),)
+ifneq ($(DND_BUILD),)
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := true
 else
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
@@ -2237,15 +2237,26 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE)
 	   $(if $(OEM_OTA_CONFIG), -o $(OEM_OTA_CONFIG)) \
 	   $(BUILT_TARGET_FILES_PACKAGE) $@
 
-CM_TARGET_PACKAGE := $(PRODUCT_OUT)/lineage-$(LINEAGE_VERSION).zip
+DND_TARGET_PACKAGE := $(PRODUCT_OUT)/$(DND_VERSION).zip
 
 .PHONY: otapackage bacon
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 bacon: otapackage
-	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(CM_TARGET_PACKAGE)
-	$(hide) $(MD5SUM) $(CM_TARGET_PACKAGE) | sed "s|$(PRODUCT_OUT)/||" > $(CM_TARGET_PACKAGE).md5sum
-	@echo "Package Complete: $(CM_TARGET_PACKAGE)" >&2
-
+	echo -e ${CL_CYA} "                                                                                                                         ";
+	echo -e ${CL_CYA} " ________              ______ _____   __                                  ________     ____________            _________ ";
+	echo -e ${CL_CYA} "  ___  __ \_____ __________  /____  | / /___________________   _______________  __ \_______  __/__(_)_________________  /";
+	echo -e ${CL_CYA} "  __  / / /  __  /_  ___/_  //_/_   |/ /_  _ \_  ___/_  ___/   __  ___/  _ \_  / / /  _ \_  /_ __  /__  __ \  _ \  __  / ";
+	echo -e ${CL_CYA} "  _  /_/ // /_/ /_  /   _  ,<  _  /|  / /  __/(__  )_(__  )    _  /   /  __/  /_/ //  __/  __/ _  / _  / / /  __/ /_/ /  ";
+	echo -e ${CL_CYA} "  /_____/ \__,_/ /_/    /_/|_| /_/ |_/  \___//____/ /____/     /_/    \___//_____/ \___//_/    /_/  /_/ /_/\___/\__,_/   ";
+	echo -e ${CL_CYA} "                                                                                                                         ";
+	echo -e ${CL_CYA} "                                                                                                                         ";
+	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(DND_TARGET_PACKAGE)
+	$(hide) $(MD5SUM) $(DND_TARGET_PACKAGE) > $(DND_TARGET_PACKAGE).md5sum
+	@echo -e ${CL_BLD}${CL_CYN}"===============================-Package complete-==============================="${CL_RST}
+	@echo -e ${CL_BLD}${CL_YLW}"Zip: "${CL_YLW} $(DND_TARGET_PACKAGE)${CL_RST}
+	@echo -e ${CL_BLD}${CL_YLW}"MD5: "${CL_YLW}" `cat $(DND_TARGET_PACKAGE).md5sum | awk '{print $$1}' `"${CL_RST}
+	@echo -e ${CL_BLD}${CL_YLW}"Size:"${CL_YLW}" `du -sh $(DND_TARGET_PACKAGE) | awk '{print $$1}' `"${CL_RST}
+	@echo -e ${CL_BLD}${CL_RED}"================================================================================"${CL_RED}
 endif    # build_ota_package
 # -----------------------------------------------------------------
 # The factory package
