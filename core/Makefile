@@ -1,5 +1,17 @@
 # Put some miscellaneous rules here
 
+ifneq ($(BUILD_WITH_COLORS),0)
+  CL_PFX="\033[33m"
+  CL_INS="\033[36m"
+  CL_RED="\033[31m"
+  CL_GRN="\033[32m"
+  CL_YLW="\033[33m"
+  CL_BLU="\033[34m"
+  CL_MAG="\033[35m"
+  CL_CYA="\033[36m"
+  CL_RST="\033[0m"
+endif
+
 # HACK: clear LOCAL_PATH from including last build target before calling
 # intermedites-dir-for
 LOCAL_PATH := $(BUILD_SYSTEM)
@@ -2571,9 +2583,25 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) \
 	   $(if $(OEM_OTA_CONFIG), -o $(OEM_OTA_CONFIG)) \
 	   $(BUILT_TARGET_FILES_PACKAGE) $@
 
+DND_TARGET_PACKAGE := $(PRODUCT_OUT)/DND-$(DND_VERSION)-$(TARGET_DEVICE)-$(shell date -u +%Y%m%d-%H%M)-$(DND_BUILD_TYPE).zip
+
 .PHONY: otapackage bacon
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 bacon: otapackage
+	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(DND_TARGET_PACKAGE)
+	$(hide) $(MD5SUM) $(DND_TARGET_PACKAGE) > $(DND_TARGET_PACKAGE).md5sum
+	@echo -e ${CL_RST} ""
+	@echo -e ${CL_RST} " ____________________________________________________________________________________ "
+	@echo -e ${CL_RST} " ___  ____ ____ _  _ _  _ ____ ____ ____    ____ ____ ___  ____ ____ _ _  _ ____ ___  "
+	@echo -e ${CL_RST} " |  \ |__| |__/ |_/  |\ | |___ [__  [__     |__/ |___ |  \ |___ |___ | |\ | |___ |  \ "
+	@echo -e ${CL_RST} " |__/ |  | |  \ | \_ | \| |___ ___] ___]    |  \ |___ |__/ |___ |    | | \| |___ |__/ "
+	@echo -e ${CL_RST} " ____________________________________________________________________________________ "
+	@echo -e ${CL_RST} ""${CL_RST}
+	@echo -e ${CL_BLD}${CL_RED}"===============================-Package complete-==============================="${CL_RED}
+	@echo -e ${CL_BLD}${CL_YLW}"Zip: "${CL_YLW} $(DND_TARGET_PACKAGE)${CL_RST}
+	@echo -e ${CL_BLD}${CL_YLW}"MD5: "${CL_YLW}" `cat $(DND_TARGET_PACKAGE).md5sum | awk '{print $$1}' `"${CL_RST}
+	@echo -e ${CL_BLD}${CL_YLW}"Size:"${CL_YLW}" `du -sh $(DND_TARGET_PACKAGE) | awk '{print $$1}' `"${CL_RST}
+	@echo -e ${CL_BLD}${CL_RED}"================================================================================"${CL_RED}
 
 endif    # build_ota_package
 
