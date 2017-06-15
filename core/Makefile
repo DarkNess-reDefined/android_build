@@ -2212,17 +2212,16 @@ DND_TARGET_PACKAGE := $(PRODUCT_OUT)/DND-$(DND_VERSION)-$(TARGET_DEVICE)-$(shell
 .PHONY: otapackage bacon
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 bacon: otapackage
-	echo -e ${CL_CYA} "                                                                                                                         ";
-	echo -e ${CL_CYA} " ________              ______ _____   __                                  ________     ____________            _________ ";
-	echo -e ${CL_CYA} "  ___  __ \_____ __________  /____  | / /___________________   _______________  __ \_______  __/__(_)_________________  /";
-	echo -e ${CL_CYA} "  __  / / /  __  /_  ___/_  //_/_   |/ /_  _ \_  ___/_  ___/   __  ___/  _ \_  / / /  _ \_  /_ __  /__  __ \  _ \  __  / ";
-	echo -e ${CL_CYA} "  _  /_/ // /_/ /_  /   _  ,<  _  /|  / /  __/(__  )_(__  )    _  /   /  __/  /_/ //  __/  __/ _  / _  / / /  __/ /_/ /  ";
-	echo -e ${CL_CYA} "  /_____/ \__,_/ /_/    /_/|_| /_/ |_/  \___//____/ /____/     /_/    \___//_____/ \___//_/    /_/  /_/ /_/\___/\__,_/   ";
-	echo -e ${CL_CYA} "                                                                                                                         ";
-	echo -e ${CL_CYA} "                                                                                                                         ";
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(DND_TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(DND_TARGET_PACKAGE) > $(DND_TARGET_PACKAGE).md5sum
-	@echo -e ${CL_BLD}${CL_CYN}"===============================-Package complete-==============================="${CL_RST}
+	@echo -e ${CL_RST} ""
+	@echo -e ${CL_RST} " ____________________________________________________________________________________ "
+	@echo -e ${CL_RST} " ___  ____ ____ _  _ _  _ ____ ____ ____    ____ ____ ___  ____ ____ _ _  _ ____ ___  "
+	@echo -e ${CL_RST} " |  \ |__| |__/ |_/  |\ | |___ [__  [__     |__/ |___ |  \ |___ |___ | |\ | |___ |  \ "
+	@echo -e ${CL_RST} " |__/ |  | |  \ | \_ | \| |___ ___] ___]    |  \ |___ |__/ |___ |    | | \| |___ |__/ "
+	@echo -e ${CL_RST} " ____________________________________________________________________________________ "
+	@echo -e ${CL_RST} ""${CL_RST}
+	@echo -e ${CL_BLD}${CL_RED}"===============================-Package complete-==============================="${CL_RED}
 	@echo -e ${CL_BLD}${CL_YLW}"Zip: "${CL_YLW} $(DND_TARGET_PACKAGE)${CL_RST}
 	@echo -e ${CL_BLD}${CL_YLW}"MD5: "${CL_YLW}" `cat $(DND_TARGET_PACKAGE).md5sum | awk '{print $$1}' `"${CL_RST}
 	@echo -e ${CL_BLD}${CL_YLW}"Size:"${CL_YLW}" `du -sh $(DND_TARGET_PACKAGE) | awk '{print $$1}' `"${CL_RST}
