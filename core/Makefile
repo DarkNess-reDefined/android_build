@@ -2768,7 +2768,7 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) \
 
 DND_TARGET_PACKAGE := $(PRODUCT_OUT)/DND-$(DND_VERSION)-$(TARGET_DEVICE)-$(shell date -u +%Y%m%d-%H%M)-$(DND_BUILD_TYPE).zip
 
-.PHONY: otapackage bacon
+.PHONY: otapackage darkness bacon
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 darkness: bacon
 bacon: otapackage
